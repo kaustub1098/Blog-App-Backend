@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.blog.app.entities.User;
 import com.blog.app.exceptions.ResourceNotFoundException;
@@ -13,6 +14,7 @@ import com.blog.app.payloads.UserDto;
 import com.blog.app.repositories.UserRepo;
 import com.blog.app.services.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
 	public UserDto getUserById(Integer userId) {
 		
 		User user = this.userRepo.findById(userId)
-				.orElseThrow(()-> new ResourceNotFoundException("User","id",userId));
+				.orElseThrow(()-> new ResourceNotFoundException("User","Id",userId));
 		
 		
 		
@@ -72,7 +74,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser(Integer userId) {
-		// TODO Auto-generated method stub
+		User user = this.userRepo.findById(userId).orElseThrow(()->new ResourceNotFoundException("User","Id",userId));
+		this.userRepo.delete(user);
 
 	}
 	
@@ -84,8 +87,7 @@ public class UserServiceImpl implements UserService {
 		user.setEmail(userDto.getEmail());
 		user.setAbout(userDto.getAbout());
 		user.setPassword(userDto.getPassword());
-		
-		return user;
+	    return user;
 	}
 	
 	public UserDto userToDto(User user) {
@@ -95,7 +97,6 @@ public class UserServiceImpl implements UserService {
 		userDto.setEmail(user.getEmail());
 		userDto.setAbout(user.getAbout());
 		userDto.setPassword(user.getPassword());
-		
 		return userDto;
 	}
 
